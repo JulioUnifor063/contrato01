@@ -56,12 +56,24 @@ def formatar_valor_adesao(valor, prefixo=""):
     except ValueError:
         return "R$ Erro"
 
-def atualizar_documento(data_contrato,data_inicio, data_fim, valor_mensalidade, qtd_acesso, valor_adesao):
+def atualizar_documento(cidade,data_contrato,data_inicio, data_fim, valor_mensalidade, qtd_acesso, valor_adesao):
     diretorio_base = obter_diretorio_base()
 
     arquivo_origem_xls = os.path.join(diretorio_base, 'Report.xls')
     arquivo_origem_xlsx = os.path.join(diretorio_base, 'Report.xlsx')
-    arquivo_word_origem = os.path.join(diretorio_base, 'contrato.docx',)
+    
+    if cidade == "Fortaleza":
+        arquivo_word_origem = os.path.join(diretorio_base, 'Fortaleza.docx')
+    elif cidade == "Belém":
+        arquivo_word_origem = os.path.join(diretorio_base, 'Belém.docx')
+
+    if not os.path.exists(arquivo_word_origem):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Icon.Critical)
+        msg.setWindowTitle("Arquivo não encontrado")
+        msg.setText(f"Cidade não encontrada.")
+        msg.exec()
+        return
     
    
     if not os.path.exists(arquivo_origem_xlsx):
@@ -148,6 +160,9 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Preenchimento de Documento")
 
+        self.combobox = QComboBox()
+        self.combobox.addItems(["Fortaleza", "Belém"])
+
         self.date_edit_inicio = QDateEdit(calendarPopup=True)
         self.date_edit_inicio.setDate(QDate.currentDate())
         self.date_edit_fim = QDateEdit(calendarPopup=True)
@@ -176,6 +191,8 @@ class MainWindow(QMainWindow):
         self.button_atualizar = QPushButton("Atualizar Documento")
 
         layout = QVBoxLayout()
+        layout.addWidget(QLabel("Cidade:"))
+        layout.addWidget(self.combobox)
         layout.addWidget(QLabel("Data de Início:"))
         layout.addWidget(self.date_edit_inicio)
         layout.addWidget(QLabel("Data de Fim:"))
@@ -226,7 +243,7 @@ class MainWindow(QMainWindow):
         valor_adesao = self.line_edit_adesao.text().replace('R$', '').replace('.', '').replace(',', '.')
         if self.checkbox_isento.isChecked():
             valor_adesao = "Isento"
-        atualizar_documento(data_contrato,data_inicio, data_fim, valor_mensalidade, qtd_acesso, valor_adesao)
+        atualizar_documento(self.combobox.currentText(),data_contrato,data_inicio, data_fim, valor_mensalidade, qtd_acesso, valor_adesao)
 
     def alternar_adicao_adesao(self):
         if self.checkbox_isento.isChecked():
