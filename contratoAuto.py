@@ -89,7 +89,7 @@ def atualizar_documento(cidade, data_contrato, data_inicio, data_fim, valor_mens
     valor_Razao = capitalize_first_letter(str(ws_origem['C7'].value).lower())
     valor_Fantasia = capitalize_first_letter(str(ws_origem['C8'].value).lower())
     valor_Fantasia = f"({valor_Fantasia})"
-    valor_Fantasia = valor_Fantasia.replace('#', '')
+    valor_Fantasia = valor_Fantasia.replace('#','*','')
     valor_Endereco = capitalize_first_letter(str(ws_origem['C9'].value).lower())
     valor_Bairro = capitalize_first_letter(str(ws_origem['C10'].value).lower())
     valor_Cidade = capitalize_first_letter(str(ws_origem['C11'].value).lower())
